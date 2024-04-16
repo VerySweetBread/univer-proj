@@ -1,30 +1,61 @@
 #pragma once
 #include <string>
 #include <iostream>
+#include <iomanip>
+#include <regex>
 
 enum Status { SUCCESS, ERROR, WARNING };
 
 class CTime {
-    int _hours;
-    int _minutes;
-    int _seconds;
-public:
-    CTime();                                      // конструктор по умолчанию
-    CTime(int hours, int minutes, int seconds);   // конструктор инициализации
-    CTime(const CTime& time);                     // конструктор копирования
-    CTime(std::string time);                      // конструктор преобразования
+    int hours;
+    int minutes;
+    int seconds;
+    Status fix();
 
-    Status check();
-    Status convert();
+public:
+    CTime();
+    CTime(int hours, int minutes, int seconds);
+    CTime(const CTime& time);
+    //CTime(std::string time);
+
+    Status check() const;
 
     Status add_hours(int hours);
     Status add_minutes(int minutes);
     Status add_seconds(int seconds);
-    CTime& add(const CTime& time);
 
-    Status assign(const CTime& time);
-    int compare(const CTime& time);
+    std::string to_str();
 
     Status input();
-    Status output();
+
+    CTime& operator =(const CTime& ctime) {
+        this->hours = ctime.hours;
+        this->minutes = ctime.minutes;
+        this->seconds = ctime.seconds;
+        return *this;
+    }
+
+    CTime& operator +=(const CTime& ctime) {
+        this->hours += ctime.hours;
+        this->minutes += ctime.minutes;
+        this->seconds += ctime.seconds;
+        this->fix();
+        return *this;
+    }
+
+    int operator ==(const CTime& ctime) {
+        return this->hours == ctime.hours 
+            && this->minutes == ctime.minutes 
+            && this->seconds == ctime.seconds;
+    }
+
+    friend std::ostream& operator<<(std::ostream& cout, CTime& ctime);
+    friend std::istream& operator>>(std::istream& cin, CTime& ctime) {
+        char colon;
+
+        return cin >> ctime.hours
+            >> colon >> ctime.minutes
+            >> colon >> ctime.seconds;
+    }
+
 };

@@ -1,66 +1,96 @@
 #include "ctime.hpp"
 
+
 CTime::CTime() {
-    this->_hours = 0;
-    this->_minutes = 0;
-    this->_seconds = 0;
+    this->hours = 0;
+    this->minutes = 0;
+    this->seconds = 0;
 }
 
 CTime::CTime(int hours, int minutes, int seconds) {
-    Status state;
-
-    this->_hours = hours;
-    this->_minutes = minutes;
-    this->_seconds = seconds;
-
-    state = this->check();
+    this->hours = hours;
+    this->minutes = minutes;
+    this->seconds = seconds;
 }
 
-Status CTime::check() {
-    /* TBD */
+CTime::CTime(const CTime& time) {
+    this->hours = time.hours;
+    this->minutes = time.minutes;
+    this->seconds = time.seconds;
+}
+
+Status CTime::check() const {
+    if (this->hours >= 24) return ERROR;
+    if (this->minutes >= 60) return ERROR;
+    if (this->seconds >= 60) return ERROR;
+
     return SUCCESS;
 }
 
-Status CTime::assign(const CTime &time) {
-    Status state;
 
-    if (this == nullptr) {
-        state = ERROR;
-    } else {
-        this->_hours = time._hours;
-        this->_minutes = time._minutes;
-        this->_seconds = time._seconds;
+/*
+* Be at home at 21:00
+* Me at 20:69:
+*/
+Status CTime::fix() {
+    Status status = SUCCESS;
 
-        state = this->check();
+    if (0 > this->seconds || this->seconds >= 60) {
+        this->minutes += this->seconds / 60;
+        this->seconds %= 60;
+        status = WARNING;
     }
-    
-    return state;
+    if (0 > this->minutes || this->minutes >= 60) {
+        this->hours += this->minutes / 60;
+        this->minutes %= 60;
+        status = WARNING;
+    }
+    if (0 > this->hours || this->hours >= 24) {
+        this->hours %= 24;
+        status = WARNING;
+    }
+
+    return status;
+}
+
+Status CTime::add_hours(int hours) {
+    this->hours += hours;
+    this->fix();
+    return WARNING;
+}
+
+Status CTime::add_minutes(int minutes) {
+    this->minutes += minutes;
+    this->fix();
+    return WARNING;
+}
+
+Status CTime::add_seconds(int seconds) {
+    this->seconds += seconds;
+    this->fix();
+    return WARNING;
+}
+
+std::string CTime::to_str() {
+    return std::to_string(this->hours) + ":" + std::to_string(this->minutes) + ":" + std::to_string(this->seconds);
 }
 
 Status CTime::input() {
     Status state;
 
     char colon;
-    std::cin >> this->_hours >> colon
-        >> this->_minutes >> colon
-        >> this->_seconds;
+    std::cin     >> this->hours 
+        >> colon >> this->minutes 
+        >> colon >> this->seconds;
 
     state = this->check();
 
     return state;
 }
 
-Status CTime::output() {
-    Status state = SUCCESS;
-
-    if (this == nullptr) {
-        state = ERROR;
-    }
-    else {
-        std::cout << this->_hours << ":"
-            << this->_minutes << ":"
-            << this->_seconds;
-    }
-
-    return state;
+std::ostream& operator<<(std::ostream& cout, CTime& ctime) {
+    return cout
+        << std::setfill('0') << std::setw(2) << ctime.hours << ":"
+        << std::setfill('0') << std::setw(2) << ctime.minutes << ":"
+        << std::setfill('0') << std::setw(2) << ctime.seconds;
 }
