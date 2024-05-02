@@ -1,6 +1,7 @@
 #include <iostream>
 #include "archive.h"
 #include "utilities.h"
+#include "icecream.hpp"
 
 #define pause system("read -p \"Press any key to resume ...\"")
 
@@ -20,7 +21,15 @@ int main() {
     while (!exit) {
         system("clear");
         OutputSystem::show(archive);
-        std::cout << "Menu:\n 1. insert,\n 2. find,\n 3. delete,\n 4. clean,\n 0. exit.\nYour choose: ";
+        std::cout
+            << "Menu:\n"
+            << "1. insert,\n"
+            << "2. find,\n"
+            << "3. delete,\n"
+            << "4. clean,\n"
+            << "0. exit.\n"
+            << "\n"
+            << "Your choose: ";
         std::cin >> user;
         switch (user) {
         case Actions::EXIT:
@@ -48,15 +57,15 @@ int main() {
             pause;
             break;
         case Actions::FIND:
-            std::cout << "TBD" << std::endl;
+            IC("Not implemented");
             pause;
             break;
         case Actions::REMOVE:
-            std::cout << "TBD" << std::endl;
+            IC("Not implemented");
             pause;
             break;
         case Actions::CLEAN:
-            std::cout << "TBD" << std::endl;
+            IC("Not implemented");
             break;
         }
     }

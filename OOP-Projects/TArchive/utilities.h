@@ -14,19 +14,21 @@ namespace InputSystem {
         T* value = nullptr;
         mode = Back;
         int user;
-        std::cout << "Choose insert mode:\n";
-        std::cout << "1 - to the back,\n";
-        std::cout << "2 - to the front,\n";
-        std::cout << "3 - at given position.\n";
-        std::cout << "Your choose: ";
+        std::cout
+            << "Choose insert mode:\n"
+            << "1 - to the back,\n"
+            << "2 - to the front,\n"
+            << "3 - at given position.\n"
+            << "Your choose: ";
         std::cin >> user;
         if (user == 1) { mode = Back; }
         if (user == 2) { mode = Front; }
         if (user == 3) {
-            std::cout << "How many values need to insert:\n";
-            std::cout << "1 - one value,\n";
-            std::cout << "2 - several values.\n";
-            std::cout << "Your choose: ";
+            std::cout
+                << "How many values need to insert:\n"
+                << "1 - one value,\n"
+                << "2 - several values.\n"
+                << "Your choose: ";
             std::cin >> user;
             if (user == 1) { mode = OneValue; }
             if (user == 2) { mode = SeveralValues; }
