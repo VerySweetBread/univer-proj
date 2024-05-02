@@ -2,6 +2,8 @@
 #include "archive.h"
 #include "utilities.h"
 
+#define pause system("read -p \"Press any key to resume ...\"")
+
 enum Actions { EXIT, INSERT, FIND, REMOVE, CLEAN };
 
 int main() {
@@ -16,7 +18,7 @@ int main() {
     InputSystem::InsertMode mode;
 
     while (!exit) {
-        system("cls");
+        system("clear");
         OutputSystem::show(archive);
         std::cout << "Menu:\n 1. insert,\n 2. find,\n 3. delete,\n 4. clean,\n 0. exit.\nYour choose: ";
         std::cin >> user;
@@ -43,15 +45,15 @@ int main() {
             if (success) {
                 OutputSystem::insert();
             }
-            system("pause");
+            pause;
             break;
         case Actions::FIND:
             std::cout << "TBD" << std::endl;
-            system("pause");
+            pause;
             break;
         case Actions::REMOVE:
             std::cout << "TBD" << std::endl;
-            system("pause");
+            pause;
             break;
         case Actions::CLEAN:
             std::cout << "TBD" << std::endl;
