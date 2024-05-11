@@ -98,20 +98,20 @@ size_t TArchive<T>::count_value(T value) {
     return out;
 }
 
-// template <typename T>
-// void TArchive<T>::clear_garbage() {
-//     if (_deleted) {
-//         size_t offset = 0;
-//         for (size_t i = 0; i < _size; i++) {
-//             if (_states[i] == State::deleted) {
-//                 offset++;
-//                 continue;
-//             }
-//             _data[i] = _data[i+offset];
-//         }
-//         _deleted -= offset;
-//     }
-// }
+template <typename T>
+void TArchive<T>::clear_garbage() {
+    if (_deleted > _size*.15) {
+        size_t offset = 0;
+        for (size_t i = 0; i < _size; i++) {
+            if (_states[i] == State::deleted) {
+                offset++;
+                continue;
+            }
+            _data[i] = _data[i+offset];
+        }
+        _deleted -= offset;
+    }
+}
 
 template <typename  T>
 void TArchive<T>::clear() {
@@ -278,6 +278,7 @@ TArchive<T>& TArchive<T>::remove(size_t pos) {
     _states[pos] = State::deleted;
     _deleted++;
     
+    clear_garbage();
     return *this;
 }
 
@@ -311,6 +312,7 @@ TArchive<T>& TArchive<T>::remove_all(T value) {
             _deleted++;
         }
     }
+    clear_garbage();
     return *this;
 }
 
