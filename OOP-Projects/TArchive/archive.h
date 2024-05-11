@@ -68,11 +68,11 @@ public:
     TArchive& remove_last(T value);
     TArchive& remove(size_t pos);
 
-    size_t* find_all(T value) /* const */ noexcept ;
-    size_t find_first(T value);
-    size_t find_last(T value);
+    size_t* find_all(T value) const noexcept;
+    size_t find_first(T value) const noexcept;
+    size_t find_last(T value) const noexcept;
 private:
-    size_t count_value(T value);
+    size_t count_value(T value) const noexcept;
     void clear_garbage();
 };
 
@@ -89,7 +89,7 @@ TArchive<T>::TArchive() {
 }
 
 template <typename T>
-size_t TArchive<T>::count_value(T value) {
+size_t TArchive<T>::count_value(T value) const noexcept {
     size_t out = 0;
     for (size_t i = 0; i < _size; i++) {
         if (_states[i] == State::busy && _data[i] == value)
@@ -317,7 +317,7 @@ TArchive<T>& TArchive<T>::remove_all(T value) {
 }
 
 template <typename T>
-size_t TArchive<T>::find_first(T value) {
+size_t TArchive<T>::find_first(T value) const noexcept {
     size_t out = -1;
     size_t pos = -1;
     for (size_t i = 0; i < _size; i++) {
@@ -334,7 +334,7 @@ size_t TArchive<T>::find_first(T value) {
 }
 
 template <typename T>
-size_t TArchive<T>::find_last(T value) {
+size_t TArchive<T>::find_last(T value) const noexcept {
     size_t out = -1;
     size_t pos = -1;
     for (size_t i = _size-1; i >= 0; i--) {
@@ -350,7 +350,7 @@ size_t TArchive<T>::find_last(T value) {
 }
 
 template <typename T>
-size_t* TArchive<T>::find_all (T value) noexcept {  // TODO: return const mod.
+size_t* TArchive<T>::find_all (T value) const noexcept {
     size_t count = this->count_value(value);
     if (count == 0) return nullptr;
     size_t* found_positions = new size_t[count + 1];
