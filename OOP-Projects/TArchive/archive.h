@@ -371,7 +371,7 @@ size_t* TArchive<T>::find_all (T value) noexcept {  // TODO: return const mod.
 
 template <typename T>
 void TArchive<T>::push_back(T value) {
-    insert(value, 0);
+    insert(value, _size);
 }
 
 template <typename T>
@@ -389,7 +389,7 @@ T TArchive<T>::pop_back() {
 
 template <typename T>
 void TArchive<T>::push_front(T value) {
-    insert(value, _size-_deleted);
+    insert(value, 0);
 }
 
 template <typename T>
