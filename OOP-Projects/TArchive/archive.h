@@ -319,11 +319,15 @@ TArchive<T>& TArchive<T>::remove_all(T value) {
 template <typename T>
 size_t TArchive<T>::find_first(T value) {
     size_t out = -1;
+    size_t pos = -1;
     for (size_t i = 0; i < _size; i++) {
-        if (_states[i] == State::busy && _data[i] == value) {
-            out = i;
-            IC(i, out);
-            break;
+        if (_states[i] == State::busy) {
+            pos++;
+            if(_data[i] == value) {
+                out = pos;
+                IC(i, out);
+                break;
+            }
         }
     }
     return out;
@@ -332,10 +336,14 @@ size_t TArchive<T>::find_first(T value) {
 template <typename T>
 size_t TArchive<T>::find_last(T value) {
     size_t out = -1;
+    size_t pos = -1;
     for (size_t i = _size-1; i >= 0; i--) {
-        if (_states[i] == State::busy && _data[i] == value) {
-            out = i;
-            break;
+        if (_states[i] == State::busy) {
+            out++;
+            if (_data[i] == value) {
+                out = pos;
+                break;
+            }
         }
     }
     return out;
@@ -349,9 +357,13 @@ size_t* TArchive<T>::find_all (T value) noexcept {  // TODO: return const mod.
     found_positions[0] = count;
 
     size_t index = 1;
+    size_t pos = -1;
     for (size_t i = 0; i < _size; i++) {
-        if (_states[i] == State::busy && _data[i] == value)
-            found_positions[index++] = i;
+        if (_states[i] == State::busy) {
+            pos++;
+            if (_data[i] == value)
+                found_positions[index++] = pos;
+        }
     }
 
     return found_positions;
@@ -365,10 +377,14 @@ void TArchive<T>::push_back(T value) {
 template <typename T>
 T TArchive<T>::pop_back() {
     if (!(_size-_deleted)) throw std::logic_error("No elements");
-    clear_garbage();
-    T value = _data[0];
-    remove(0);
-    return value;
+    for (size_t i = _size-1; i>=0; i--) {
+        if (_states[i] == State::busy) {
+            T value = _data[i];
+            remove(i);
+            return value;
+        }
+    }
+    
 }
 
 template <typename T>
@@ -379,10 +395,13 @@ void TArchive<T>::push_front(T value) {
 template <typename T>
 T TArchive<T>::pop_front() {
     if (!(_size-_deleted)) throw std::logic_error("No elements");
-    clear_garbage();
-    T value = _data[_size-1];
-    remove(_size-1);
-    return value;
+    for (size_t i = 0; i<_size; i++) {
+        if (_states[i] == State::busy) {
+            T value = _data[i];
+            remove(i);
+            return value;
+        }
+    }
 }
 
 template <typename T>
