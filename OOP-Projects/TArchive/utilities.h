@@ -1,7 +1,8 @@
 #pragma once
 #include <iostream>
-#include <Windows.h>
 #include "archive.h"
+#include "icecream.hpp"
+#include <ncurses.h>
 
 /*                     —À”∆≈¡Õ€≈/¬—œŒÃŒ√¿“≈À‹Õ€≈ ‘”Õ ÷»»                     */
 
@@ -13,19 +14,21 @@ namespace InputSystem {
         T* value = nullptr;
         mode = Back;
         int user;
-        std::cout << "Choose insert mode:\n";
-        std::cout << "1 - to the back,\n";
-        std::cout << "2 - to the front,\n";
-        std::cout << "3 - at given position.\n";
-        std::cout << "Your choose: ";
+        std::cout
+            << "Choose insert mode:\n"
+            << "1 - to the back,\n"
+            << "2 - to the front,\n"
+            << "3 - at given position.\n"
+            << "Your choose: ";
         std::cin >> user;
         if (user == 1) { mode = Back; }
         if (user == 2) { mode = Front; }
         if (user == 3) {
-            std::cout << "How many values need to insert:\n";
-            std::cout << "1 - one value,\n";
-            std::cout << "2 - several values.\n";
-            std::cout << "Your choose: ";
+            std::cout
+                << "How many values need to insert:\n"
+                << "1 - one value,\n"
+                << "2 - several values.\n"
+                << "Your choose: ";
             std::cin >> user;
             if (user == 1) { mode = OneValue; }
             if (user == 2) { mode = SeveralValues; }
@@ -54,27 +57,12 @@ namespace InputSystem {
 }
 
 namespace OutputSystem {
-    static void setCursor(int column, int line) {
-        COORD coord;
-        coord.X = column;
-        coord.Y = line;
-        SetConsoleCursorPosition(
-            GetStdHandle(STD_OUTPUT_HANDLE),
-            coord
-        );
+    static void setCursor(int column, int row) {
+        move(row, column);
     }
 
-    static void getCursor(int& column, int& line) noexcept {
-        CONSOLE_SCREEN_BUFFER_INFO csbi;
-
-        if (GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi)) {
-            column = csbi.dwCursorPosition.X;
-            line = csbi.dwCursorPosition.Y;
-        }
-        else {
-            column = 0;
-            line = 0;
-        }
+    static void getCursor(int& column, int& row) noexcept {
+        getyx(stdscr, row, column);
     }
 
     static void insert() noexcept {
