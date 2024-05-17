@@ -2,16 +2,17 @@
 #include <iostream>
 #include <limits>
 #include <stdexcept>
+#include "../TArchive/archive.h"
 
 #define STEP_CAPACITY 15
 
 namespace algorithms {
-    template<typename T>
-    void swap(T& val_1, T& val_2) {
-        T tmp = val_1;
-        val_1 = val_2;
-        val_2 = tmp;
-    }
+    // template<typename T>
+    // void swap(T& val_1, T& val_2) {
+    //     T tmp = val_1;
+    //     val_1 = val_2;
+    //     val_2 = tmp;
+    // }
 
     template<typename T>
     T max(T val_1, T val_2) {
@@ -26,21 +27,19 @@ namespace algorithms {
     }
 }
 
-class CString {
-    char* _data;                  // хранилище данных
-    size_t _size;                 // длина текста
-    size_t _capacity;             // размер хранилища
-    size_t _max_capacity = -1;    // максимально возможный размер хранилища
+class CString : public TArchive<char> {
 
 public:
     CString();
     CString(const CString& str);
-    //CString(const char* c_str);
-    //CString(const char* c_str, size_t n);
-    //CString(size_t n, char c);
-    //CString(const CString& str, size_t pos, size_t len);
+    CString(const char* c_str);
+    CString(const char* c_str, size_t n);
+    CString(size_t n, char c);
+    CString(const CString& str, size_t pos, size_t len);
 
-    ~CString();
+    friend std::ostream& operator<<(std::ostream& cout, CString str);
+
+    // ~CString();
 
     //void print() const noexcept; 
 
@@ -53,7 +52,9 @@ public:
 
     //void swap(CString& str);
     //size_t copy(char* buf, size_t len, size_t pos = 0) const;
-    //CString substr(size_t pos, size_t len) const;
+    CString substr(size_t pos, size_t len) const;
+
+    void clear();
 
     //CString& assign(const CString& str);
     //CString& assign(const CString& str, size_t pos, size_t len);

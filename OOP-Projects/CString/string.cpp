@@ -1,36 +1,41 @@
 #include "string.h"
+#include <string.h>
 
-/// <summary>
-/// Конструктор по умолчанию.
-/// </summary>
-CString::CString() {
-    _size = 0;
-    _capacity = STEP_CAPACITY;
-    _data = new char[_capacity];
-    _data[0] = '\0';
-}
+CString::CString() : TArchive<char>() {}
+CString::CString(const CString& str) : TArchive<char>(str._data, str._size) {}
+CString::CString(const char* c_str) : TArchive<char>(c_str, strlen(c_str)) {}
+CString::CString(const char* c_str, size_t n) : TArchive<char>(c_str, n) {}
+CString::CString(size_t n, char c) : TArchive<char>(n, c) {}
+CString::CString(const CString& str, size_t pos, size_t len) : TArchive<char>(str, pos, len) {}
 
-/// <summary>
-/// Конструктор копирования.
-/// </summary>
-/// <param name="str"> - копируемая строка</param>
-CString::CString(const CString& str) {
-    _size = str._size;
-    _capacity = str._capacity;
-    _data = new char[_capacity];
-    for (size_t i = 0; i < _size; i++) {
-        _data[i] = str._data[i];
+// FIXME: illegal hardware instruction
+std::ostream& operator<<(std::ostream& cout, CString str) {
+    for (size_t i = 0; i < str.length(); i++) {
+        IC(str.get(i));
+        cout << str.get(i);
     }
-    _data[_size] = '\0';
+    return cout;
 }
 
-/// <summary>
-/// Деструктор.
-/// </summary>
-CString::~CString() {
-    delete[] _data;
-    _data = nullptr;
+CString CString::substr(size_t pos, size_t len) const {
+return CString(*this, pos, len);
 }
+
+// TODO:
+// Ask later what the hell if delete this, 
+// inheritanced method will work but won't
+void CString::clear() {
+    for (size_t i = 0; i < _size; i++)
+        _states[i] = State::deleted;
+    _deleted = _size;
+}
+// /// <summary>
+// /// Деструктор.
+// /// </summary>
+// CString::~CString() {
+//     delete[] _data;
+//     _data = nullptr;
+// }
 
 /// <summary>
 /// Проверка строки на пустоту.

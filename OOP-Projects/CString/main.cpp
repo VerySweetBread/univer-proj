@@ -1,6 +1,8 @@
 #include <iostream>
 #include "string.h"
+#include "../TArchive/icecream.hpp"
 
+/*
 int main() {
     CString str_1;
     CString str_2(str_1);
@@ -9,39 +11,34 @@ int main() {
     std::cout << str_1.compare(str_2) << std::endl;
     return 0;
 }
+*/
 
-/*
 // пример main()
 int main() {
-    String str_1;
-    String str_2("This is an example sentence. And it's cool.");
-    String str_3(str_2);
-    String str_4("Very important text for save", 10);
-    String str_5(20, '*');
-    String str_6(str_4, 5, 3);
+    CString str_1;
+    CString str_2("This is an example sentence. And it's cool.");
+    CString str_3(str_2);
+    CString str_4("Very important text for save", 10);
+    CString str_5(20, '*');
+    CString str_6(str_4, 5, 3);
 
-    std::cout << "String str_1;\n";
-    str_1.print();
-    std::cout << std::endl << "String str_2(\"Hello\");\n";
-    str_2.print();
-    std::cout << std::endl << "String str_3(str_2);\n";
-    str_3.print();
-    std::cout << std::endl << "String str_4(\"Very important text for save\", 10);\n";
-    str_4.print();
-    std::cout << std::endl << "String str_5(20, \'*\');\n";
-    str_5.print();
-    std::cout << std::endl << "String str_6(str_4, 5, 3);\n";
-    str_6.print();
-    std::cout << std::endl;
+    std::cout << "str_1: "; str_1.print(); std::cout << std::endl;
+    std::cout << "str_2: "; str_2.print(); std::cout << std::endl;
+    std::cout << "str_3: "; str_3.print(); std::cout << std::endl;
+    std::cout << "str_4: "; str_4.print(); std::cout << std::endl;
+    std::cout << "str_5: "; str_5.print(); std::cout << std::endl;
+    std::cout << "str_6: "; str_6.print(); std::cout << std::endl;
 
     std::cout << "str_1.empty();\n" <<
         (str_1.empty() ? "true" : "false") << std::endl;
+    /*
     std::cout << "str_4.size();\n" <<
         str_4.size() << std::endl;
     std::cout << "str_4.capacity();\n" <<
         str_4.capacity() << std::endl;
     std::cout << "str_4.data();\n" <<
         str_4.data() << std::endl;
+    */
 
     str_4.clear();
     std::cout << "str_4.clear();\n";
@@ -59,6 +56,7 @@ int main() {
     str_4.print();
     std::cout << std::endl;
 
+    /*
     str_2.erase(10, 8);
     std::cout << "str_2.erase(10, 8);\n";
     str_2.print();
@@ -131,8 +129,8 @@ int main() {
 
     std::cout << "str_7.find_first_not_of(\"ABCDEFGHIKLMNOPQRSTVXYZabcdefghiklmnopqrstvxyz ., \");\n" <<
         str_7.find_first_not_of("ABCDEFGHIKLMNOPQRSTVXYZabcdefghiklmnopqrstvxyz .,") << std::endl;
+    */
 
     system("pause");
     return 0;
 }
-*/

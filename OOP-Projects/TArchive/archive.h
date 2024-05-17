@@ -21,6 +21,7 @@ namespace algorithms {
 
 template <typename T>
 class TArchive {
+protected:
     T* _data;                  // динамический массив данных
     State* _states;            // состояния ячеек
     size_t _capacity;          // реальный размер массива
@@ -51,7 +52,7 @@ public:
     size_t length();
     T get(size_t pos);
 
-    void clear();
+    TArchive& clear();
     //void resize(size_t n, T value);
     void reserve(size_t n);
 
@@ -96,7 +97,7 @@ TArchive<T>::TArchive(const TArchive& archive) {
     _size = archive._size;
     _deleted = 0;
     _capacity = (_size/STEP_CAPACITY) * STEP_CAPACITY;
-    if (_size%STEP_CAPACITY) _capacity++;
+    if (_size%STEP_CAPACITY) _capacity += STEP_CAPACITY;
     _data = new T[_capacity];
     _states = new State[_capacity];
 
@@ -114,7 +115,7 @@ TArchive<T>::TArchive(const T* arr, size_t n) {
     _size = n;
     _deleted = 0;
     _capacity = (_size/STEP_CAPACITY) * STEP_CAPACITY;
-    if (_size%STEP_CAPACITY) _capacity++;
+    if (_size%STEP_CAPACITY) _capacity += STEP_CAPACITY;
     _data = new T[_capacity];
     _states = new State[_capacity];
 
@@ -130,7 +131,7 @@ TArchive<T>::TArchive(size_t n, T value) {
     _size = n;
     _deleted = 0;
     _capacity = (_size/STEP_CAPACITY) * STEP_CAPACITY;
-    if (_size%STEP_CAPACITY) _capacity++;
+    if (_size%STEP_CAPACITY) _capacity += STEP_CAPACITY;
     _data = new T[_capacity];
     _states = new State[_capacity];
 
@@ -147,7 +148,7 @@ TArchive<T>::TArchive(const TArchive& archive, size_t pos, size_t n) {
     _size = n;
     _deleted = 0;
     _capacity = (_size/STEP_CAPACITY) * STEP_CAPACITY;
-    if (_size%STEP_CAPACITY) _capacity++;
+    if (_size%STEP_CAPACITY) _capacity += STEP_CAPACITY;
     _data = new T[_capacity];
     _states = new State[_capacity];
 
@@ -203,10 +204,11 @@ void TArchive<T>::clear_garbage() {
 }
 
 template <typename  T>
-void TArchive<T>::clear() {
+TArchive<T>& TArchive<T>::clear() {
     for (size_t i; i < _size; i++)
         _states[i] = State::deleted;
     _deleted = _size;
+    return *this;
 }
 
 template <typename T>
@@ -279,13 +281,11 @@ TArchive<T>& TArchive<T>::insert(const T* arr, size_t n, size_t pos) {
 
 template <typename T>
 TArchive<T>& TArchive<T>::insert(T value, size_t pos) {
-    IC(pos);
     if (_size < pos)
         throw std::logic_error("Error in function \
             \"TArchive<T>& insert(T value, size_t pos)\": wrong position value.");
 
     if (_deleted) {
-        IC();
         
         size_t dBefore = 0;  // Deleted cells before the position
         size_t index = 0;
@@ -299,7 +299,6 @@ TArchive<T>& TArchive<T>::insert(T value, size_t pos) {
                 dBefore++;
                 bEnd = i;
             } else index++;
-            IC(i, dBefore);
         }
         aStart = i;
         aEnd = i;
@@ -313,17 +312,14 @@ TArchive<T>& TArchive<T>::insert(T value, size_t pos) {
         size_t offset = 0;
         if (!dBefore) {
             for (i = aEnd; i > aStart; i--) {
-                IC(i);
                 _data[i] = _data[i-1];
                 _states[i] = State::busy;
             }
             
         } else {
             aStart--;
-            IC(bEnd, aStart);
             
             for (i = bEnd; i < aStart; i++) {
-                IC(i);
                 _data[i] = _data[i+1];
                 _states[i] = State::busy;
             }
@@ -332,7 +328,6 @@ TArchive<T>& TArchive<T>::insert(T value, size_t pos) {
         _states[aStart] = State::busy;
         _deleted--;
     } else {
-        IC();
         
         // действия при переполнении
         if (this->full()) {
@@ -414,7 +409,6 @@ size_t TArchive<T>::find_first(T value) const noexcept {
             pos++;
             if(_data[i] == value) {
                 out = pos;
-                IC(i, out);
                 break;
             }
         }
@@ -495,8 +489,6 @@ T TArchive<T>::pop_front() {
 
 template <typename T>
 void TArchive<T>::print() const noexcept {
-    IC(_states);
-    IC(_size, _capacity, _deleted);
     
     for (size_t i = 0; i < _size; i++) {
         if (_states[i] != State::deleted)
